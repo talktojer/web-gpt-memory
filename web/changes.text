@@ -1,0 +1,16 @@
+const userEmbedsResponse = await openai.createEmbedding(userEmbedsApiCallData);
+userMessage.vector = userEmbedsResponse.data.data[0].embedding;
+
+console.log("User Message Vector: ", userMessage.vector); // Add this line for logging
+const assistantEmbedsResponse = await openai.createEmbedding(assistantEmbedsApiCallData);
+assistantMessageObj.vector = assistantEmbedsResponse.data.data[0].embedding;
+
+console.log("Assistant Message Vector: ", assistantMessageObj.vector); // Add this line for logging
+let normalizedContext = extendedContext.map(entry => {
+  if (entry.vector) {
+    entry.vector = normalizeVector(entry.vector);
+  }
+  return entry;
+});
+
+console.log("Normalized Context: ", normalizedContext); // Add this line for logging

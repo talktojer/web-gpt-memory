@@ -1,0 +1,114 @@
+/* ChatWindow.css */
+
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(100vh - 50px); /* Adjust the value as needed */
+  padding: 25px;
+  background-color: #333;
+  color: #fff;
+  position: relative;
+}
+
+.rce-container-mlist {
+  margin-top: 80px; /* Add this line to create top margin */
+}
+
+.powered-by-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.powered-by-text {
+  color: pink;
+  margin-right: 20px;
+}
+
+.message-list {
+  flex-grow: 1;
+  border-radius: 5px;
+  padding: 10px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  background-color: #222;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 20px; /* Add this line to create space */
+  width: 100%;
+}
+
+.message-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #444;
+  color: #fff;
+  margin-left: -4px; /* Adjust the value as needed */
+}
+
+.save-session-button {
+  margin-left: 20px; /* Adjust the margin as needed */
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.react-chat-list {
+  margin: 0;
+}
+
+.react-chat-list .react-chat-list-item {
+  background-color: #333;
+}
+
+/* Attempt to target the text within the MessageBox component */
+.react-chat-list .react-chat-list-item .rce-mbox .rce-mbox-text {
+  color: #000 !important;
+}
+
+.rce-mbox-text.left {
+  color: #000 !important; /* change color to white */
+}
+
+.rce-mbox-text.right {
+  color: #000 !important; /* change color to white */
+}
+.share-link-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.share-link-button {
+  margin-right: 25px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.link-copied-notice {
+  font-size: 14px;
+  color: #007bff;
+}

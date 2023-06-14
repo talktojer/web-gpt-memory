@@ -1,0 +1,106 @@
+const express = require('express');
+const fs = require('fs-extra');
+const path = require('path');
+const hat = require('hat');
+const { Configuration, OpenAIApi } = require('openai');
+const cors = require('cors');
+const _ = require('lodash');
+const mathjs = require('mathjs');
+const glob = require('glob');
+
+require('dotenv').config();
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// ... rest of your function definitions ...
+
+app.get('/new-session', (req, res) => {
+  const token = hat();
+  res.json({ token });
+});
+
+app.get('/load-session', async (req, res) => {
+  const { token } = req.query;
+  const sessionPath = path.join(__dirname, `sessions/${token}.json`);
+
+  try {
+    if (fs.existsSync(sessionPath)) {
+      const fileContent = fs.readFileSync(sessionPath, 'utf-8');
+      const chatLog = JSON.parse(fileContent);
+      res.json({ chatLog });
+    } else {
+      res.json({ chatLog: [] });
+    }
+  } catch (error) {
+    console.error('Error reading chat log:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/send-message', async (req, res) => {
+  const { token, message } = req.body;
+  
+  const sessionPath = path.join(__dirname, `sessions/${token}.json`);
+  const embeddingsDir = path.join(__dirname, 'embeddings');
+
+  try {
+    // Check if token is valid
+    if (!token) {
+      throw new Error('Token is not valid or defined');
+    }
+
+    let context = await loadContext(token);
+    let currentTime = Date.now();
+
+    // Check if context is valid
+    if (!context) {
+      throw new Error('Context is not valid or defined');
+    }
+
+    // ... rest of your message handling ...
+
+    const assistantEmbedsPath = path.join(embeddingsDir, `log_${token}-${timestamp}_a.json`);
+    const userEmbedsPath = path.join(embeddingsDir, `log_${token}-${timestamp}_u.json`);
+
+    // Error handling for writing assistant embeddings
+    try {
+      await fs.promises.writeFile(assistantEmbedsPath, JSON.stringify(assistantMessageObj, null, 2), 'utf-8');
+      console.log(`Assistant embeddings successfully written to: ${assistantEmbedsPath}`);
+    } catch (error) {
+      console.error('Error writing assistant embeddings:', error);
+    }
+
+    // Error handling for writing user embeddings
+    try {
+      await fs.promises.writeFile(userEmbedsPath, JSON.stringify(userMessage, null, 2), 'utf-8');
+      console.log(`User embeddings successfully written to: ${userEmbedsPath}`);
+    } catch (error) {
+      console.error('Error writing user embeddings:', error);
+    }
+
+    // Error handling for writing the session context
+    try {
+      await fs.promises.writeFile(sessionPath, JSON.stringify(context, null, 2), 'utf-8');
+      console.log(`Session context successfully written to: ${sessionPath}`);
+    } catch (error) {
+      console.error('Error writing session context:', error);
+    }
+
+    res.json({ assistantMessage });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});

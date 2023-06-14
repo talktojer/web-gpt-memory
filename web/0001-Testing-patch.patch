@@ -1,0 +1,119 @@
+From 4bdc37952b9337cf42ab3eb67e192e4d81427a6a Mon Sep 17 00:00:00 2001
+From: Jeremy Hancock <talktojer@gmail.com>
+Date: Sun, 4 Jun 2023 15:56:33 -0400
+Subject: [PATCH] Testing patch
+
+---
+ web/changes.text | 102 ++++++++---------------------------------------
+ 1 file changed, 16 insertions(+), 86 deletions(-)
+
+diff --git a/web/changes.text b/web/changes.text
+index 0f3f47f..3902133 100644
+--- a/web/changes.text
++++ b/web/changes.text
+@@ -1,86 +1,16 @@
+-async function loadEmbeddings(token) {
+-   console.log("Loading Embeddings");
+-   console.log("Token", token);
+-   
+-   const embeddingsDir = path.join(__dirname, 'embeddings');
+-   const embeddingsFiles = glob.sync(path.join(embeddingsDir, `log_${token}*`));
+-   
+-   // Add console log here to check if embeddingsFiles is populated correctly
+-   console.log("Embeddings Files Found:", embeddingsFiles);
+-   
+-   // Log an error message if no embeddings files found
+-   if (!embeddingsFiles.length) {
+-     console.error(`No embeddings files found for token ${token}.`);
+-     return [];
+-   }
+-   
+-   let embeddings = [];
+-   
+-   for (let i = 0; i < embeddingsFiles.length; i++) {
+-     try {
+-       const fileContent = await fs.promises.readFile(embeddingsFiles[i], 'utf-8');
+-       const parsedContent = JSON.parse(fileContent);
+-       // Only push the "vector" field to the embeddings array
+-       if (parsedContent.vector) {
+-         embeddings.push(parsedContent.vector);
+-         // Add console log here to confirm vectors are being pushed to embeddings array
+-         console.log("Pushed Vector to Embeddings:", parsedContent.vector);
+-       } else {
+-         console.warn(`File ${embeddingsFiles[i]} does not contain a "vector" field.`);
+-       }
+-     } catch (error) {
+-       console.error(`Error reading or parsing file ${embeddingsFiles[i]}:`, error);
+-     }
+-   }
+-   
+-   // Log an error message if embeddings array is still empty after reading files
+-   if (!embeddings.length) {
+-     console.error(`No valid embeddings data found in the files for token ${token}.`);
+-   }
+-   
+-   console.log("Embedding Files", embeddingsFiles);
+-   return embeddings;
+-}
+-async function loadEmbeddings(token) {
+-   console.log("Loading Embeddings");
+-   console.log("Token", token);
+-   
+-   const embeddingsDir = path.join(__dirname, 'embeddings');
+-   const embeddingsFiles = glob.sync(path.join(embeddingsDir, `log_${token}*`));
+-   
+-   // Add console log here to check if embeddingsFiles is populated correctly
+-   console.log("Embeddings Files Found:", embeddingsFiles);
+-   
+-   // Log an error message if no embeddings files found
+-   if (!embeddingsFiles.length) {
+-     console.error(`No embeddings files found for token ${token}.`);
+-     return [];
+-   }
+-   
+-   let embeddings = [];
+-   
+-   for (let i = 0; i < embeddingsFiles.length; i++) {
+-     try {
+-       const fileContent = await fs.promises.readFile(embeddingsFiles[i], 'utf-8');
+-       const parsedContent = JSON.parse(fileContent);
+-       // Only push the "vector" field to the embeddings array
+-       if (parsedContent.vector) {
+-         embeddings.push(parsedContent.vector);
+-         // Add console log here to confirm vectors are being pushed to embeddings array
+-         console.log("Pushed Vector to Embeddings:", parsedContent.vector);
+-       } else {
+-         console.warn(`File ${embeddingsFiles[i]} does not contain a "vector" field.`);
+-       }
+-     } catch (error) {
+-       console.error(`Error reading or parsing file ${embeddingsFiles[i]}:`, error);
+-     }
+-   }
+-   
+-   // Log an error message if embeddings array is still empty after reading files
+-   if (!embeddings.length) {
+-     console.error(`No valid embeddings data found in the files for token ${token}.`);
+-   }
+-   
+-   console.log("Embedding Files", embeddingsFiles);
+-   return embeddings;
+-}
++const userEmbedsResponse = await openai.createEmbedding(userEmbedsApiCallData);
++userMessage.vector = userEmbedsResponse.data.data[0].embedding;
++
++console.log("User Message Vector: ", userMessage.vector); // Add this line for logging
++const assistantEmbedsResponse = await openai.createEmbedding(assistantEmbedsApiCallData);
++assistantMessageObj.vector = assistantEmbedsResponse.data.data[0].embedding;
++
++console.log("Assistant Message Vector: ", assistantMessageObj.vector); // Add this line for logging
++let normalizedContext = extendedContext.map(entry => {
++  if (entry.vector) {
++    entry.vector = normalizeVector(entry.vector);
++  }
++  return entry;
++});
++
++console.log("Normalized Context: ", normalizedContext); // Add this line for logging
+-- 
+2.40.1.windows.1
+
